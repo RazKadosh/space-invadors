@@ -1,0 +1,25 @@
+body {
+    text-align: center;
+}
+
+table {
+    margin: auto;
+    /* height: 100px; */
+    /* width: 500px; */
+    background-color: rgb(213, 221, 221);
+}
+
+td {
+    height: 30px;
+    width: 30px;
+    border: 1px solid black;
+
+}
+
+.ground{
+    background-color: brown;
+}
+
+.hidden{
+    display: none;
+}
