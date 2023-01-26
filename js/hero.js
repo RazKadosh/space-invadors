@@ -1,13 +1,27 @@
 'use strict'
 
 const LASER_SPEED = 40;
-var gHero = { pos: { i: 12, j: 5 }, isShoot: false };
+const SUPER_LASER_SPEED = 20
+
+var gHero = {
+    pos: { i: 12, j: 5 },
+    isShoot: false
+}
 
 var gIntervalLaser
+var gIsvictory
+var gBlowUpNegs
+var gSuperMode = false
+var gCountOfSuper
 
-// creates the hero and place it on board
+
 function createHero(board) {
     board[gHero.pos.i][gHero.pos.j].gameObject = HERO
+
+    gBlowUpNegs = false
+
+    gCountOfSuper = 0
+    countOfSuper((-3))
 }
 // Handle game keys
 function onKeyDown(ev) {
@@ -31,12 +45,24 @@ function onKeyDown(ev) {
             nextLocation.i--
             shoot(nextLocation)
             break
+        case 'n':
+            gBlowUpNegs = true
+            shoot(nextLocation)
+            break
+        case 'x':
+            if (gCountOfSuper === 0) return
+            countOfSuper(1)
+            gSuperMode = true
+            nextLocation.i--
+            shoot(nextLocation)
+            break
         default:
             return null
     }
 
 }
-// Move the hero right (1) or left (-1)
+
+
 function moveHero(nextLocation) {
     if (nextLocation.j < 0 || nextLocation.j > gBoard.length - 1) return
 
@@ -44,16 +70,29 @@ function moveHero(nextLocation) {
     updateCell(nextLocation, HERO)
     gHero.pos = nextLocation
 }
-// Sets an interval for shutting (blinking) the laser up towards aliens
+
+
 function shoot(nextLocation) {
-    if (gHero.isShoot) return
-    gIntervalLaser = setInterval(function () {
-        blinkLaser(nextLocation)
-    }, LASER_SPEED)
+    if (gHero.isShoot || !gGame.isOn) return
+
+    if (gSuperMode) {
+
+        gIntervalLaser = setInterval(function () {
+            blinkLaser(nextLocation)
+        }, SUPER_LASER_SPEED)
+        gSuperMode = false
+    } else {
+        gIntervalLaser = setInterval(function () {
+            blinkLaser(nextLocation)
+        }, LASER_SPEED)
+    }
 }
-// renders a LASER at specific cell for short time and removes it
+
+
 function blinkLaser(nextLocation) {
     gHero.isShoot = true
+    
+    var nextCell = getElCell({ i: nextLocation.i - 1, j: nextLocation.j })
 
     if (nextLocation.i === 0) {
         updateCell(nextLocation, '')
@@ -62,25 +101,83 @@ function blinkLaser(nextLocation) {
         return
     }
 
-    var nextCell = getElCell({ i: nextLocation.i - 1, j: nextLocation.j })
-
-    if (nextCell.innerText === ALIEN) {
+    if (nextCell.innerText === CANDY) {
+        updateScore(50)
+        
+        gIsZombieFreeze = true
+        setTimeout(() => gIsZombieFreeze = false, 5000)
+        
         updateCell(nextLocation, '')
         nextLocation.i--
         updateCell(nextLocation, LASER)
-        gGame.aliensCount++
-        console.log(gGame.aliensCount)
-        updateScore(10)
+        
         nextCell.innerText = ''
         clearInterval(gIntervalLaser)
         gHero.isShoot = false
-        
+
+        return
+    }
+
+
+    if (nextCell.innerText === ZOMBIE) {
+
+        if (gBlowUpNegs) {
+            blowUpNegs(nextLocation)
+            gBlowUpNegs = false
+        }
+        updateScore(10)
+
+        updateCell(nextLocation, '')
+        nextLocation.i--
+        if (gSuperMode) {
+            updateCell(nextLocation, SUPER_LASER)
+        } else {
+            updateCell(nextLocation, LASER)
+        }
+
+        gGame.zombiesCount++
+        nextCell.innerText = ''
+        gHero.isShoot = false
+
+        clearInterval(gIntervalLaser)
+
         checkVictory()
         return
     }
 
-    updateCell(nextLocation, '')
-    nextLocation.i--
-    updateCell(nextLocation, LASER)
+  updateCell(nextLocation, '')
+        nextLocation.i--
+        if (gSuperMode) {
+            updateCell(nextLocation, SUPER_LASER)
+        } else {
+            updateCell(nextLocation, LASER)
+        }
 
 }
+
+
+function blowUpNegs(pos) {
+    var negsCount = 0
+
+    var cellI = pos.i
+    var cellJ = pos.j
+
+    for (var i = cellI - 1; i <= cellI + 1; i++) {
+        if (i < 0 || i >= gBoard.length) continue
+        for (var j = cellJ - 1; j <= cellJ + 1; j++) {
+            if (j < 0 || j >= gBoard[0].length) continue
+            if (i === cellI && j === cellJ) continue
+            if (gBoard[i][j].gameObject === ZOMBIE) {
+                negsCount++
+                console.log(negsCount)
+                updateCell({ i, j }, '')
+
+            }
+        }
+    }
+    updateScore((negsCount * 10))
+    updateScore(-10)
+    checkVictory()
+    return
+}
+

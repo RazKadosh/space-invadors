@@ -1,25 +1,52 @@
 body {
     text-align: center;
+    background-image: url('../img/forest.jpg');
+    background-size: cover;
 }
 
 table {
     margin: auto;
-    /* height: 100px; */
-    /* width: 500px; */
-    background-color: rgb(213, 221, 221);
+    background-color: rgba(255, 101, 35, 0.856);
 }
 
 td {
-    height: 30px;
-    width: 30px;
-    border: 1px solid black;
+    height: 35px;
+    width: 35px;
+    font-size: 25px;
+    border: 0px;
 
 }
 
-.ground{
-    background-color: brown;
+.ground {
+    background-color: rgb(39, 38, 38);
 }
 
-.hidden{
+.hidden {
     display: none;
+}
+
+button {
+    font-family: fantasy;
+    font-size: medium;
+    margin: auto;
+    /* margin-top: 30px;   */
+    height: 30px;
+    border-radius: 10px;
+    border-style: solid;
+    border-color: rgb(0, 0, 0);
+    background-color: rgb(140, 54, 39);
+cursor: pointer;
+}
+
+h2 {
+    color: rgb(164, 117, 14);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    font-size: medium;
+}
+
+h1 {
+    color: rgb(134, 100, 26);
+    margin-bottom: 5px;
 }

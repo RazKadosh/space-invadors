@@ -5,25 +5,31 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>The Zombie Invasion</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body onkeydown="onKeyDown(event)" onload="init()">
 
-    <h1>SPACE INVADORS</h1>
-
+    <h1>🧟‍♀️ THE ZOMBIE INVASION 🧟</h1>
+    <h2>Score: <span class="score">0</span></h2>
+    <h2>Super-Count: <span class="super-count">0</span></h2>
     <div class="modal hidden">
         <h2></h2>
         <button onclick="init()">Play Again</button>
     </div>
-    <h2>Score: <span class="score">0</span></h2>
-    <div class="board-container"></div>
+    <div class="board-container">
+        <button onclick="changeDifficulty('easy')">Easy</button>
+        <button onclick="changeDifficulty('normal')">NORMAL</button>
+        <button onclick="changeDifficulty('hard')">Hard</button>
+    </div>
+    
+
 
 
     <script src="js/utils.js"></script>
     <script src="js/hero.js"></script>
-    <script src="js/alien.js"></script>
+    <script src="js/zombie.js"></script>
     <script src="js/main.js"></script>
 </body>
 

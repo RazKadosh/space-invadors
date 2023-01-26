@@ -1,38 +1,44 @@
 'use strict'
 
 const BOARD_SIZE = 14
-const ALIENS_ROW_LENGTH = 8
-const ALIENS_ROW_COUNT = 3
-const HERO = '♆'
-const ALIEN = '👾'
-const LASER = '☄️'
+const ZOMBIES_ROW_LENGTH = 8
+const ZOMBIES_ROW_COUNT = 3
+const HERO = '🥷🏼'
+const ZOMBIE = '🧟'
+const LASER = '🗡️'
+const CANDY = '🍖'
+const SUPER_LASER = '⚔️'
 const GROUND = 'GROUND'
 const SKY = 'SKY'
 
-// Matrix of cell objects. e.g.: {type: SKY, gameObject: ALIEN}
+var gIntervalCandy
+
+
 var gBoard
 var gGame = {
     isOn: false,
     score: 0,
-    aliensCount: 0
+    zombiesCount: 0
 }
-// Called when game loads
+
+
 function init() {
     gGame.isOn = true
-    clearInterval(gIntervalAliens)
-    clearInterval(gIntervalLaser)
+    clearInterval(gIntervalZombies)
 
     gBoard = createBoard()
     createHero(gBoard)
     createAliens(gBoard)
     renderBoard(gBoard, '.board-container')
     gGame.score = 0
-    gGame.aliensCount = 0
+    gGame.zombiesCount = 0
     hideModal()
     updateScore(0)
+    gIsvictory = false
+    gIntervalCandy = setInterval(putCandyAtFirstRow, 10000)
 }
-// Create and returns the board with aliens on top, ground at bottom
-// use the functions: createCell, createHero, createAliens
+
+
 function createBoard() {
 
     const board = []
@@ -47,7 +53,8 @@ function createBoard() {
     }
     return board
 }
-// Render the board as a <table> to the page
+
+
 function renderBoard(board, selector) {
 
     var strHTML = '<table border="0"><tbody>'
@@ -63,8 +70,11 @@ function renderBoard(board, selector) {
 
             strHTML += `<td data-i="${i}" data-j="${j}" class="${className}">`
 
-            if (cell.gameObject === ALIEN) strHTML += ALIEN
+            if (cell.gameObject === ZOMBIE) strHTML += ZOMBIE
             else if (cell.gameObject === HERO) strHTML += HERO
+            else if (cell.gameObject === LASER) strHTML += LASER
+            else if (cell.gameObject === SUPER_LASER) strHTML += SUPER_LASER
+            else if (cell.gameObject === CANDY) strHTML += CANDY
             strHTML += '</td>'
         }
         strHTML += '</tr>'
@@ -74,32 +84,24 @@ function renderBoard(board, selector) {
     const elContainer = document.querySelector(selector)
     elContainer.innerHTML = strHTML
 }
-// Returns a new cell object. e.g.: {type: SKY, gameObject: ALIEN}
+
 function createCell(gameObject = null) {
     return {
         type: SKY,
         gameObject: gameObject
     }
 }
-// position such as: {i: 2, j: 7}
-function updateCell(pos, gameObject = null) {
-    gBoard[pos.i][pos.j].gameObject = gameObject;
-    var elCell = getElCell(pos);
-    elCell.innerHTML = gameObject || '';
-}
 
-function checkVictory() {
-    if (gGame.aliensCount === (ALIENS_ROW_COUNT * ALIENS_ROW_LENGTH)) {
-        clearInterval(gIntervalAliens)
-        victory()
-    }
+function changeDifficulty(){
+
 }
 
 function gameOver() {
-    // clearInterval(gIntervalAliens)
-    // clearInterval(gIntervalLaser)
+    clearInterval(gIntervalZombies)
+    clearInterval(gIntervalCandy)
+    gHero.isShoot = false
     gGame.isOn = false
-    showModal('Game Over')
+    showModal('Game Over⚔️')
 }
 
 function showModal(txt) {
@@ -125,8 +127,44 @@ function hideModal() {
 
 
 function victory() {
-    clearInterval(gIntervalAliens)
-    clearInterval(gIntervalLaser)
-    showModal('Victory')
+    gHero.isShoot = false
+    gGame.isOn = false
+    clearInterval(gIntervalCandy)
+    showModal('Victory!')
+
 }
 
+
+function checkVictory() {
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard[0].length; j++) {
+            var currCell = gBoard[i][j]
+            if (currCell.gameObject === ZOMBIE) return
+        }
+    }
+    victory()
+}
+
+function putCandyAtFirstRow() {
+    var emptyCells = getEmptyCells()
+    var pos = emptyCells[getRandomInt(0, BOARD_SIZE - 1)]
+
+    updateCell({ i: pos.i, j: pos.j }, CANDY)
+
+    setTimeout(function () {
+        updateCell({ i: pos.i, j: pos.j }, '')
+    }, 5000)
+}
+
+
+function getEmptyCells() {
+    var emptyCells = []
+    var i = 0
+
+    for (var j = 0; j < gBoard[i].length; j++) {
+
+        if ((gBoard[i][j] != ZOMBIE) && (gBoard[i][j] != LASER)) emptyCells.push({ i, j })
+    }
+
+    return emptyCells
+}
