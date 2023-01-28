@@ -14,7 +14,6 @@ td {
     width: 35px;
     font-size: 25px;
     border: 0px;
-
 }
 
 .ground {
@@ -35,7 +34,8 @@ button {
     border-style: solid;
     border-color: rgb(0, 0, 0);
     background-color: rgb(140, 54, 39);
-cursor: pointer;
+    cursor: pointer;
+    margin-bottom: 5px;
 }
 
 h2 {

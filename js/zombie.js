@@ -1,14 +1,14 @@
 'use strict'
 
-const ZOMBIE_SPEED = 500;
+var ZOMBIE_SPEED = 500;
 
 var gIntervalZombies
 var gZombiesTopRowIdx
-var gAliensBottomRowIdx
+var gZombiesBottomRowIdx
 var gIsZombieFreeze
 var gIsRightSide
 
-function createAliens(board) {
+function createZombies(board) {
     for (var i = 0; i < board.length; i++) {
         for (var j = 0; j < board[0].length; j++) {
             if (i < ZOMBIES_ROW_COUNT && j < ZOMBIES_ROW_LENGTH)
@@ -17,18 +17,16 @@ function createAliens(board) {
     }
 
     gZombiesTopRowIdx = 0
-    gAliensBottomRowIdx = ZOMBIES_ROW_COUNT - 1
+    gZombiesBottomRowIdx = ZOMBIES_ROW_COUNT - 1
     gIsRightSide = false
     gIsZombieFreeze = false
 
     gIntervalZombies = setInterval(function () {
-        shiftBoardRight(gBoard, gZombiesTopRowIdx, gAliensBottomRowIdx)
+        shiftBoardRight(gBoard, gZombiesTopRowIdx, gZombiesBottomRowIdx)
     }, ZOMBIE_SPEED)
 }
 
-function handleAlienHit(pos) { }
 
-// var res = shiftBoardRight(board)
 function shiftBoardRight(board, fromI, toI) {
     if (gIsZombieFreeze||!gGame.isOn) return
 
@@ -40,7 +38,7 @@ function shiftBoardRight(board, fromI, toI) {
                     clearInterval(gIntervalZombies)
 
                     gIntervalZombies = setInterval(() => {
-                        shiftBoardDown(board, gZombiesTopRowIdx, gAliensBottomRowIdx)
+                        shiftBoardDown(gBoard, gZombiesTopRowIdx, gZombiesBottomRowIdx)
                     }, ZOMBIE_SPEED);
 
                     return
@@ -63,7 +61,7 @@ function shiftBoardLeft(board, fromI, toI) {
                     clearInterval(gIntervalZombies)
 
                     gIntervalZombies = setInterval(() => {
-                        shiftBoardDown(gBoard, gZombiesTopRowIdx, gAliensBottomRowIdx)
+                        shiftBoardDown(gBoard, gZombiesTopRowIdx, gZombiesBottomRowIdx)
                     }, ZOMBIE_SPEED);
 
                     return
@@ -95,16 +93,16 @@ function shiftBoardDown(board, fromI, toI) {
         }
     }
     gZombiesTopRowIdx++
-    gAliensBottomRowIdx++
+    gZombiesBottomRowIdx++
 
     if (gIsRightSide) {
         gIntervalZombies = setInterval(function () {
-            shiftBoardLeft(gBoard, gZombiesTopRowIdx, gAliensBottomRowIdx)
+            shiftBoardLeft(gBoard, gZombiesTopRowIdx, gZombiesBottomRowIdx)
         }, ZOMBIE_SPEED)
 
     } else {
         gIntervalZombies = setInterval(function () {
-            shiftBoardRight(gBoard, gZombiesTopRowIdx, gAliensBottomRowIdx)
+            shiftBoardRight(gBoard, gZombiesTopRowIdx, gZombiesBottomRowIdx)
         }, ZOMBIE_SPEED)
     }
 }

@@ -28,7 +28,7 @@ function init() {
 
     gBoard = createBoard()
     createHero(gBoard)
-    createAliens(gBoard)
+    createZombies(gBoard)
     renderBoard(gBoard, '.board-container')
     gGame.score = 0
     gGame.zombiesCount = 0
@@ -92,16 +92,14 @@ function createCell(gameObject = null) {
     }
 }
 
-function changeDifficulty(){
 
-}
 
 function gameOver() {
     clearInterval(gIntervalZombies)
     clearInterval(gIntervalCandy)
     gHero.isShoot = false
     gGame.isOn = false
-    showModal('Game Over⚔️')
+    showModal('Game Over ⚔️')
 }
 
 function showModal(txt) {

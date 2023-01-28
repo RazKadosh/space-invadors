@@ -9,10 +9,10 @@ var gHero = {
 }
 
 var gIntervalLaser
-var gIsvictory
+var gIsvictory = false
 var gBlowUpNegs
 var gSuperMode = false
-var gCountOfSuper
+var gSuperCount
 
 
 function createHero(board) {
@@ -20,8 +20,8 @@ function createHero(board) {
 
     gBlowUpNegs = false
 
-    gCountOfSuper = 0
-    countOfSuper((-3))
+    gSuperCount = 0
+    superCount((-3))
 }
 // Handle game keys
 function onKeyDown(ev) {
@@ -50,8 +50,8 @@ function onKeyDown(ev) {
             shoot(nextLocation)
             break
         case 'x':
-            if (gCountOfSuper === 0) return
-            countOfSuper(1)
+            if (gSuperCount === 0) return
+            superCount(1)
             gSuperMode = true
             nextLocation.i--
             shoot(nextLocation)
@@ -73,25 +73,25 @@ function moveHero(nextLocation) {
 
 
 function shoot(nextLocation) {
-    if (gHero.isShoot || !gGame.isOn) return
+    if (!gGame.isOn || gHero.isShoot) return
 
-    if (gSuperMode) {
+    if (!gSuperMode) {
 
+        gIntervalLaser = setInterval(function () {
+            blinkLaser(nextLocation)
+        }, LASER_SPEED)
+    } else {
         gIntervalLaser = setInterval(function () {
             blinkLaser(nextLocation)
         }, SUPER_LASER_SPEED)
         gSuperMode = false
-    } else {
-        gIntervalLaser = setInterval(function () {
-            blinkLaser(nextLocation)
-        }, LASER_SPEED)
     }
 }
 
 
 function blinkLaser(nextLocation) {
     gHero.isShoot = true
-    
+
     var nextCell = getElCell({ i: nextLocation.i - 1, j: nextLocation.j })
 
     if (nextLocation.i === 0) {
@@ -103,14 +103,14 @@ function blinkLaser(nextLocation) {
 
     if (nextCell.innerText === CANDY) {
         updateScore(50)
-        
+
         gIsZombieFreeze = true
         setTimeout(() => gIsZombieFreeze = false, 5000)
-        
+
         updateCell(nextLocation, '')
         nextLocation.i--
         updateCell(nextLocation, LASER)
-        
+
         nextCell.innerText = ''
         clearInterval(gIntervalLaser)
         gHero.isShoot = false
@@ -145,13 +145,13 @@ function blinkLaser(nextLocation) {
         return
     }
 
-  updateCell(nextLocation, '')
-        nextLocation.i--
-        if (gSuperMode) {
-            updateCell(nextLocation, SUPER_LASER)
-        } else {
-            updateCell(nextLocation, LASER)
-        }
+    updateCell(nextLocation, '')
+    nextLocation.i--
+    if (gSuperMode) {
+        updateCell(nextLocation, SUPER_LASER)
+    } else {
+        updateCell(nextLocation, LASER)
+    }
 
 }
 
@@ -169,7 +169,6 @@ function blowUpNegs(pos) {
             if (i === cellI && j === cellJ) continue
             if (gBoard[i][j].gameObject === ZOMBIE) {
                 negsCount++
-                console.log(negsCount)
                 updateCell({ i, j }, '')
 
             }

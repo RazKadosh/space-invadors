@@ -23,9 +23,9 @@ function updateCell(pos, gameObject = null) {
     elCell.innerHTML = gameObject || '';
 }
 
-function countOfSuper(diff) {
+function superCount(diff) {
     // Model
-    gCountOfSuper -= diff
+    gSuperCount -= diff
     // DOM
-    document.querySelector('.super-count').innerText = gCountOfSuper
+    document.querySelector('.super-count').innerText = gSuperCount
 }
